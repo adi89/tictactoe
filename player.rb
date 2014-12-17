@@ -29,7 +29,7 @@ class Player
   end
 
   def determine_match_result(board)
-    if board.successful_configurations.include? trio_config
+    if board.successful_configurations.any?{|i| (i - trio_config).empty?  }
       self.winner = true
     end
   end
@@ -38,13 +38,11 @@ class Player
     array = []
     sorted_positions.each_with_index do |integer, index|
       if sorted_positions[index + 2]
-        array.push(integer, sorted_positions[index + 1], sorted_positions[index + 2])
+        array.push( [ integer, sorted_positions[index + 1], sorted_positions[index + 2] ] )
       end
+      array
     end
-    array
   end
-
-
 
 
 

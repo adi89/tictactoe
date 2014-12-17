@@ -3,12 +3,13 @@ require_relative 'player'
 
 class Board
 
-  attr_accessor :available_positions, :moves
+  attr_accessor :available_positions, :moves, :game_array
 
   def initialize
     @positions = position_hash
     @available_positions = (1..9).to_a
     @moves = 0
+    @game_array = Array.new(9)
   end
 
   def draw
@@ -30,11 +31,32 @@ class Board
      ]
   end
 
-  def update_board(player, position)
+  def update_game_array(index, player)
+    @game_array[index] = player.game_symbol
+    update_board(player.game_symbol, (index + 1).to_s)
+  end
+
+  def update_from_minimax_move(game_config_slots)
+    # symbol = (game_config_slots - @game_array).first
+    symbol, index = game_config_differs_at(game_config_slots)
+    @game_array[index] = symbol
+    update_board(symbol, (index + 1).to_s)
+  end
+
+  def game_config_differs_at(game_config_slots)
+   game_config_slots.each_with_index do |element, index|
+      if @game_array[index] != element
+        return element, index
+      end
+    end
+  end
+
+
+  def update_board(symbol, position)
     raise "Enter Available Position" if @available_positions.include? position
     @available_positions.delete(position.to_i)
     @moves += 1
-    @positions[position] = player.game_symbol
+    @positions[position] = symbol
   end
 
   private
